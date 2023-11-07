@@ -1,5 +1,3 @@
-use std::time::UNIX_EPOCH;
-
 use serde::{Deserialize, Serialize};
 use tls_codec::{TlsDeserialize, TlsSerialize, TlsSize};
 
@@ -49,7 +47,7 @@ impl Lifetime {
     pub fn new(t: u64) -> Self {
         let lifetime_margin: u64 = DEFAULT_KEY_PACKAGE_LIFETIME_MARGIN_SECONDS;
         let now = instant::SystemTime::now()
-            .duration_since(UNIX_EPOCH)
+            .duration_since(instant::SystemTime::UNIX_EPOCH)
             .expect("SystemTime before UNIX EPOCH!")
             .as_secs();
         let not_before = now - lifetime_margin;
@@ -63,7 +61,7 @@ impl Lifetime {
     /// Returns true if this lifetime is valid.
     pub(crate) fn is_valid(&self) -> bool {
         match instant::SystemTime::now()
-            .duration_since(UNIX_EPOCH)
+            .duration_since(instant::SystemTime::UNIX_EPOCH)
             .map(|duration| duration.as_secs())
         {
             Ok(elapsed) => self.not_before < elapsed && elapsed < self.not_after,
